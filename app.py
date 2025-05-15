@@ -53,4 +53,4 @@ except Exception as ex:
     st.error(ex)
 helper.play_webcam(model)
 
-st.sidebar.markdown("Créditos: Nicole Numberg, Teresa Cossio, Oscar Aguilar, Jorge Urioste", unsafe_allow_html=True)
+st.sidebar.markdown("Créditos: Nicole Numberg, Teresa Cossio, Oscar Aguilar, Jorge Urioste, Jorge Saucedo", unsafe_allow_html=True)
