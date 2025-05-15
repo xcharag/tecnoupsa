@@ -90,7 +90,7 @@ def _display_detected_frames(model, st_frame, image):
 
 def play_webcam(model):
     source_webcam = settings.WEBCAM_PATH
-    if st.button('Detect Objects'):
+    if st.button('Detectar Objetos'):
         try:
             vid_cap = cv2.VideoCapture(source_webcam)
             st_frame = st.empty()

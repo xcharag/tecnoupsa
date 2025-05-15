@@ -4,15 +4,15 @@ import helper
 import settings
 
 st.set_page_config(
-    page_title="Waste Detection",
+    page_title="EcoClasificador Upsa",
 )
 
-st.sidebar.title("Detect Console")
+st.sidebar.title("Consola de Detección de Residuos")
 
 model_path = Path(settings.DETECTION_MODEL)
 
-st.title("Intelligent waste segregation system")
-st.write("Start detecting objects in the webcam stream by clicking the button below. To stop the detection, click stop button in the top right corner of the webcam stream.")
+st.title("EcoClasificador Upsa: Sistema Inteligente de Clasificación de Residuos")
+st.write("Clasificación de residuos en tiempo real usando IA")
 st.markdown(
 """
 <style>
@@ -49,8 +49,8 @@ unsafe_allow_html=True
 try:
     model = helper.load_model(model_path)
 except Exception as ex:
-    st.error(f"Unable to load model. Check the specified path: {model_path}")
+    st.error(f"No se puede abrir el modelo: {model_path}")
     st.error(ex)
 helper.play_webcam(model)
 
-st.sidebar.markdown("This is a demo of the waste detection model.", unsafe_allow_html=True)
+st.sidebar.markdown("Créditos: Nicole Numberg, Teresa Cossio, Oscar Aguilar, Jorge Urioste", unsafe_allow_html=True)
