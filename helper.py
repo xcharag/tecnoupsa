@@ -3,31 +3,29 @@ import time
 import streamlit as st
 import cv2
 import settings
-import threading
 
-def sleep_and_clear_success():
-    time.sleep(3)
-    st.session_state['recyclable_placeholder'].empty()
-    st.session_state['non_recyclable_placeholder'].empty()
-    st.session_state['hazardous_placeholder'].empty()
 
 def load_model(model_path):
     model = YOLO(model_path)
     return model
 
+
 def classify_waste_type(detected_items):
     recyclable_items = set(detected_items) & set(settings.RECYCLABLE)
     non_recyclable_items = set(detected_items) & set(settings.NON_RECYCLABLE)
     hazardous_items = set(detected_items) & set(settings.HAZARDOUS)
-    
+
     return recyclable_items, non_recyclable_items, hazardous_items
+
 
 def remove_dash_from_class_name(class_name):
     return class_name.replace("_", " ")
 
+
 def _display_detected_frames(model, st_frame, image):
-    image = cv2.resize(image, (640, int(640*(9/16))))
-    
+    image = cv2.resize(image, (640, int(640 * (9 / 16))))
+
+    # Initialize session state variables
     if 'unique_classes' not in st.session_state:
         st.session_state['unique_classes'] = set()
 
@@ -40,6 +38,14 @@ def _display_detected_frames(model, st_frame, image):
 
     if 'last_detection_time' not in st.session_state:
         st.session_state['last_detection_time'] = 0
+
+    # Check if we need to clear placeholders (3 seconds after detection)
+    current_time = time.time()
+    if st.session_state['last_detection_time'] > 0 and current_time - st.session_state['last_detection_time'] > 3:
+        st.session_state['recyclable_placeholder'].empty()
+        st.session_state['non_recyclable_placeholder'].empty()
+        st.session_state['hazardous_placeholder'].empty()
+        st.session_state['last_detection_time'] = 0  # Reset timer
 
     res = model.predict(image, conf=0.6)
     names = model.names
@@ -75,8 +81,8 @@ def _display_detected_frames(model, st_frame, image):
                     unsafe_allow_html=True
                 )
 
-            threading.Thread(target=sleep_and_clear_success).start()
-            st.session_state['last_detection_time'] = time.time()
+            # Update detection time
+            st.session_state['last_detection_time'] = current_time
 
     res_plotted = res[0].plot()
     st_frame.image(res_plotted, channels="BGR")
@@ -91,7 +97,7 @@ def play_webcam(model):
             while (vid_cap.isOpened()):
                 success, image = vid_cap.read()
                 if success:
-                    _display_detected_frames(model,st_frame,image)
+                    _display_detected_frames(model, st_frame, image)
                 else:
                     vid_cap.release()
                     break
